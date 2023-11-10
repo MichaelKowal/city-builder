@@ -4,16 +4,41 @@
     <meta charset="UTF-8" />
     <title>Document</title>
     <link rel="stylesheet" href="./public/main.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root-window">
       <div id="render-target"></div>
     </div>
     <script type="module">
-      import { createScene } from "./src/scene.js";
+      import Scene from "./src/scene.js";
 
       window.onload = () => {
-        window.scene = createScene();
+        window.scene = new Scene();
+
+        document.addEventListener("mousedown", (e) => {
+          window.scene.onMouseDown(e);
+        });
+
+        document.addEventListener("mouseup", (e) => {
+          window.scene.onMouseUp(e);
+        });
+
+        document.addEventListener("mousemove", (e) => {
+          window.scene.onMouseMove(e);
+        });
+
+        document.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+        });
+
         window.scene.start();
       };
     </script>

@@ -1,43 +1,81 @@
-import * as THREE from "https://unpkg.com/three@0.158.0/build/three.module.js";
+import * as THREE from "three";
+import Camera from "./camera.js";
+import { setMouseDownState, setMouseUpState } from "./mouseHandler.js";
 
-export const createScene = () => {
-  const gameWindow = document.getElementById("render-target");
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x777777);
+export default class Scene {
+  /**
+   * @type {HTMLDivElement}
+   */
+  gameWindow = null;
+  /**
+   * @type {THREE.Scene}
+   */
+  scene = null;
+  /**
+   * @type {Camera}
+   */
+  camera = null;
+  /**
+   * @type {THREE.WebGLRenderer}
+   */
+  renderer = null;
 
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    gameWindow.offsetWidth / gameWindow.offsetHeight,
-    0.1,
-    1000
-  );
-  camera.position.z = 5;
+  constructor() {
+    this.init();
+    this.createBox();
+  }
 
-  const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(gameWindow.offsetWidth, gameWindow.offsetHeight);
-  gameWindow.appendChild(renderer.domElement);
+  init() {
+    this.gameWindow = document.getElementById("render-target");
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x777777);
 
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-  const mesh = new THREE.Mesh(geometry, material);
-  scene.add(mesh);
+    this.camera = new Camera(this.gameWindow);
 
-  const draw = () => {
-    mesh.geometry.rotateX(0.01);
-    mesh.geometry.rotateY(0.01);
-    renderer.render(scene, camera);
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setSize(
+      this.gameWindow.offsetWidth,
+      this.gameWindow.offsetHeight
+    );
+
+    this.gameWindow.appendChild(this.renderer.domElement);
+  }
+
+  createBox() {
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const mesh = new THREE.Mesh(geometry, material);
+    this.scene.add(mesh);
+  }
+
+  draw = () => {
+    // mesh.geometry.rotateX(0.01);
+    // mesh.geometry.rotateY(0.01);
+    this.renderer.render(this.scene, this.camera.camera);
   };
 
-  const start = () => {
-    renderer.setAnimationLoop(draw);
+  start = () => {
+    this.renderer.setAnimationLoop(this.draw);
   };
 
-  const stop = () => {
-    renderer.setAnimationLoop(null);
+  stop = () => {
+    this.renderer.setAnimationLoop(null);
   };
 
-  return {
-    start,
-    stop,
+  onMouseDown = (event) => {
+    // Call this first to ensure the mouse state is set for
+    // further event handlers.
+    setMouseDownState(event);
   };
-};
+
+  onMouseUp = (event) => {
+    // Call this first to ensure the mouse state is set for
+    // further event handlers.
+    setMouseUpState(event);
+  };
+
+  onMouseMove = (event) => {
+    console.log("mouse move");
+    this.camera.handleCameraMove(event);
+  };
+}
