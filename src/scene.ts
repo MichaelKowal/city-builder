@@ -1,12 +1,18 @@
 import * as THREE from "three";
 import Camera from "./camera.js";
-import { setMouseDownState, setMouseUpState } from "./utils/mouseHandler";
+import {
+  mouseState,
+  setMouseDownState,
+  setMouseUpState,
+} from "./utils/mouseHandler";
+import Game from "./game.js";
 
 export default class Scene {
   gameWindow: HTMLElement | null = null;
   scene: THREE.Scene;
   camera: Camera;
   renderer: THREE.WebGLRenderer;
+  raycaster: THREE.Raycaster;
 
   constructor() {
     this.gameWindow = document.getElementById("render-target");
@@ -25,9 +31,11 @@ export default class Scene {
     );
 
     this.gameWindow.appendChild(this.renderer.domElement);
+
+    this.raycaster = new THREE.Raycaster();
   }
 
-  setupLights = () => {
+  setUpLights = () => {
     const lights = [
       new THREE.AmbientLight(0xffffff, 0.2),
       new THREE.DirectionalLight(0xffffff, 0.3),
@@ -59,10 +67,41 @@ export default class Scene {
     this.renderer.setAnimationLoop(null);
   };
 
+  checkForIntersections = (event: MouseEvent) => {
+    // Calculate mouse position in normalized device coordinates
+    mouseState.mousePosition.x =
+      (event.clientX / this.renderer.domElement.clientWidth) * 2 - 1;
+    mouseState.mousePosition.y =
+      (event.clientY / this.renderer.domElement.clientHeight) * -2 + 1;
+
+    this.raycaster.setFromCamera(mouseState.mousePosition, this.camera.camera);
+    let intersections = this.raycaster.intersectObjects(
+      this.scene.children,
+      false
+    );
+    if (intersections.length > 0) {
+      // If there is already a selected object, reset its emissive color and deselect it.
+      if (Game.getInstance().selectedObject) {
+        (
+          (Game.getInstance().selectedObject as THREE.Mesh)
+            .material as THREE.MeshLambertMaterial
+        ).emissive.set(0x000000);
+        Game.getInstance().selectedObject = null;
+      }
+      // Set the emissive color of the selected object and set it as the selected object.
+      Game.getInstance().selectedObject = intersections[0].object;
+      (
+        (Game.getInstance().selectedObject! as THREE.Mesh)
+          .material as THREE.MeshLambertMaterial
+      ).emissive.set(0x555555);
+    }
+  };
+
   onMouseDown = (event: MouseEvent) => {
     // Call this first to ensure the mouse state is set for
     // further event handlers.
     setMouseDownState(event);
+    this.checkForIntersections(event);
   };
 
   onMouseUp = (event: MouseEvent) => {

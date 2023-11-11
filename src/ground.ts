@@ -1,26 +1,26 @@
-import { BuildingType } from "./types/AssetTypes";
+import { GroundType } from "./types/AssetTypes";
 import { IAsset } from "./types/IAsset";
 import { createAssetInstance } from "./utils/assets";
 
-export default class Building implements IAsset {
-  type: BuildingType;
+export default class Ground implements IAsset {
+  type: GroundType;
   level: number = 1;
   maxLevel: number = 3;
   mesh: THREE.Mesh | null = null;
 
-  constructor(type: BuildingType, level = 1, maxLevel = 3) {
+  constructor(type: GroundType = GroundType.DIRT, level = 1) {
     this.type = type;
     this.level = level;
-    this.maxLevel = maxLevel;
   }
 
   /**
-   * Upgrade the building to the next level.
+   * Upgrade the ground from dirt to grass.
    * If the upgrade is successful, return true.
    */
   upgrade() {
     if (this.level < this.maxLevel) {
       this.level++;
+      this.type = GroundType.GRASS;
       return true;
     }
     return false;
@@ -30,7 +30,6 @@ export default class Building implements IAsset {
     this.mesh = createAssetInstance(this.type, {
       x: args.x,
       y: args.y,
-      level: this.level,
     }) as THREE.Mesh;
     return this.mesh;
   }

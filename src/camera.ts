@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { mouseState } from "./utils/mouseHandler";
 import {
   DEG_TO_RAD,
   MAX_CAMERA_ELEVATION,
@@ -11,6 +10,7 @@ import {
   Y_AXIS,
   ZOOM_SPEED,
 } from "./utils/constants";
+import { mouseState } from "./utils/mouseHandler";
 
 export default class Camera {
   elevation: number = 60;

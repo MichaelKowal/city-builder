@@ -7,6 +7,7 @@ import { configureEventHandlers } from "./utils/events";
 export default class Game implements IUpdatable {
   scene: Scene | null = null;
   city: City | null = null;
+  private _selectedObject: THREE.Object3D | null = null;
   static instance: Game;
 
   static getInstance() {
@@ -28,7 +29,7 @@ export default class Game implements IUpdatable {
 
     this.city = new City(size);
 
-    this.scene.setupLights();
+    this.scene.setUpLights();
     this.scene.start();
   };
 
@@ -44,5 +45,13 @@ export default class Game implements IUpdatable {
 
   update() {
     this.city?.update();
+  }
+
+  set selectedObject(object: THREE.Object3D | null) {
+    this._selectedObject = object;
+  }
+
+  get selectedObject() {
+    return this._selectedObject;
   }
 }

@@ -1,49 +1,55 @@
-import * as THREE from "three";
-import Game from "./game";
 import Building from "./building";
-import { BuildingType } from "./types/BuildingType";
+import Game from "./game";
+import Ground from "./ground";
+import { BuildingType } from "./types/AssetTypes";
+import IUpdatable from "./types/IUpdatable";
+import { IAsset } from "./types/IAsset";
 
-export default class Tile {
+export default class Tile implements IUpdatable {
   x: number = 0;
   y: number = 0;
   building: Building | undefined;
-  mesh: THREE.Mesh | null = null;
+  ground: Ground | undefined;
 
   constructor(x: number, y: number, building?: Building) {
     this.x = x;
     this.y = y;
     this.building = building;
+    this.ground = new Ground();
   }
 
-  createMesh() {
-    if (!this.building || !Game.getInstance().scene) {
+  createMesh(asset: IAsset) {
+    if (!asset || !Game.getInstance().scene) {
       return;
     }
     const scene = Game.getInstance().scene!.scene;
-    if (this.mesh) {
-      scene.getObjectByName(this.mesh.name);
-      scene.remove(this.mesh);
+    if (asset.mesh) {
+      scene.getObjectByName(asset.mesh.name);
+      scene.remove(asset.mesh);
     }
-    const height = this.building.level;
-    const geometry = new THREE.BoxGeometry(0.8, height, 0.8);
-    const material = new THREE.MeshLambertMaterial({
-      color: 0x777777,
-    });
-    this.mesh = new THREE.Mesh(geometry, material);
-    this.mesh.position.set(this.x, height / 2, this.y);
-    scene.add(this.mesh);
+    asset.mesh = asset.createMesh({ x: this.x, y: this.y });
+    scene.add(asset.mesh);
   }
 
   update() {
     const rand = Math.random();
+    // 1% chance of building upgrade
     if (rand < 0.01) {
-      console.log("Building upgraded!");
+      let updated = false;
       if (!this.building) {
         this.building = new Building(BuildingType.BUILDING);
+        updated = true;
       } else {
-        this.building.upgrade();
+        updated = this.building.upgrade();
       }
-      this.createMesh();
+      updated && this.createMesh(this.building);
+    }
+    // 30% chance of ground upgrade
+    if (rand < 0.3) {
+      if (this.ground) {
+        const upgraded = this.ground?.upgrade();
+        upgraded && this.createMesh(this.ground);
+      }
     }
   }
 }

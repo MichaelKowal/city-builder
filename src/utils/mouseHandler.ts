@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 enum MouseButtons {
   LEFT_MOUSE_BUTTON,
   MIDDLE_MOUSE_BUTTON,
@@ -5,18 +7,10 @@ enum MouseButtons {
 }
 
 export const mouseState = {
-  /**
-   * @type {boolean}
-   */
   isLeftMouseDown: false,
-  /**
-   * @type {boolean}
-   */
   isMiddleMouseDown: false,
-  /**
-   * @type {boolean}
-   */
   isRightMouseDown: false,
+  mousePosition: new THREE.Vector2(),
 };
 
 /**
@@ -35,6 +29,7 @@ export const setMouseDownState = (event: MouseEvent) => {
       mouseState.isRightMouseDown = true;
       break;
   }
+
   event.preventDefault();
   event.stopPropagation();
   event.stopImmediatePropagation();
