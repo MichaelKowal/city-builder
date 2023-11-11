@@ -1,0 +1,44 @@
+{
+  "name": "city-builder",
+  "version": "1.0.0",
+  "description": "simple city buider game using THREE.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "yarn lint && vite",
+    "build": "vite build",
+    "lint": "eslint . --ext .ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MichaelKowal/city-builder.git"
+  },
+  "keywords": [
+    "THREE.js",
+    "city-builder"
+  ],
+  "author": "Michael Kowal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MichaelKowal/city-builder/issues"
+  },
+  "homepage": "https://github.com/MichaelKowal/city-builder#readme",
+  "dependencies": {
+    "three": "^0.158.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.158.2",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "eslint": "^8.53.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.2",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
+  },
+  "packageManager": "yarn@3.2.1",
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}

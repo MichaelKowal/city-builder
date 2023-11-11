@@ -1,32 +1,18 @@
 import * as THREE from "three";
 import Camera from "./camera.js";
-import { setMouseDownState, setMouseUpState } from "./mouseHandler.js";
+import { setMouseDownState, setMouseUpState } from "./utils/mouseHandler";
 
 export default class Scene {
-  /**
-   * @type {HTMLDivElement}
-   */
-  gameWindow = null;
-  /**
-   * @type {THREE.Scene}
-   */
-  scene = null;
-  /**
-   * @type {Camera}
-   */
-  camera = null;
-  /**
-   * @type {THREE.WebGLRenderer}
-   */
-  renderer = null;
+  gameWindow: HTMLElement | null = null;
+  scene: THREE.Scene;
+  camera: Camera;
+  renderer: THREE.WebGLRenderer;
 
   constructor() {
-    this.init();
-    this.createBox();
-  }
-
-  init() {
     this.gameWindow = document.getElementById("render-target");
+    if (!this.gameWindow) {
+      throw new Error("Unable to find game window.");
+    }
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x777777);
 
@@ -41,16 +27,27 @@ export default class Scene {
     this.gameWindow.appendChild(this.renderer.domElement);
   }
 
-  createBox() {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const mesh = new THREE.Mesh(geometry, material);
-    this.scene.add(mesh);
-  }
+  setupLights = () => {
+    const lights = [
+      new THREE.AmbientLight(0xffffff, 0.2),
+      new THREE.DirectionalLight(0xffffff, 0.3),
+      new THREE.DirectionalLight(0xffffff, 0.3),
+      new THREE.DirectionalLight(0xffffff, 0.3),
+    ];
+
+    // Set position of directional lights.
+    lights[1].position.set(0, 1, 0);
+    lights[2].position.set(1, 1, 0);
+    lights[3].position.set(0, 1, 1);
+
+    this.scene.add(...lights);
+  };
+
+  resetScene = () => {
+    this.scene.clear();
+  };
 
   draw = () => {
-    // mesh.geometry.rotateX(0.01);
-    // mesh.geometry.rotateY(0.01);
     this.renderer.render(this.scene, this.camera.camera);
   };
 
@@ -62,20 +59,19 @@ export default class Scene {
     this.renderer.setAnimationLoop(null);
   };
 
-  onMouseDown = (event) => {
+  onMouseDown = (event: MouseEvent) => {
     // Call this first to ensure the mouse state is set for
     // further event handlers.
     setMouseDownState(event);
   };
 
-  onMouseUp = (event) => {
+  onMouseUp = (event: MouseEvent) => {
     // Call this first to ensure the mouse state is set for
     // further event handlers.
     setMouseUpState(event);
   };
 
-  onMouseMove = (event) => {
-    console.log("mouse move");
+  onMouseMove = (event: MouseEvent) => {
     this.camera.handleCameraMove(event);
   };
 }

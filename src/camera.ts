@@ -1,39 +1,25 @@
 import * as THREE from "three";
-import { mouseState } from "./mouseHandler.js";
-import { DEG_TO_RAD } from "./constants.js";
-
-const MIN_CAMERA_RADIUS = 2;
-const MAX_CAMERA_RADIUS = 10;
-const Y_AXIS = new THREE.Vector3(0, 1, 0);
-const ROTATION_SPEED = 0.5;
-const PAN_SPEED = -0.01;
-const ZOOM_SPEED = 0.02;
-const MIN_CAMERA_ELEVATION = 30;
-const MAX_CAMERA_ELEVATION = 90;
+import { mouseState } from "./utils/mouseHandler";
+import {
+  DEG_TO_RAD,
+  MAX_CAMERA_ELEVATION,
+  MAX_CAMERA_RADIUS,
+  MIN_CAMERA_ELEVATION,
+  MIN_CAMERA_RADIUS,
+  PAN_SPEED,
+  ROTATION_SPEED,
+  Y_AXIS,
+  ZOOM_SPEED,
+} from "./utils/constants";
 
 export default class Camera {
-  /**
-   * @type {number}
-   */
-  elevation = MIN_CAMERA_ELEVATION;
-  /**
-   * @type {number}
-   */
-  azimuth = 0;
-  /**
-   * @type {number}
-   */
-  radius = 4;
-  /**
-   * @type {THREE.Vector3}
-   */
-  origin = new THREE.Vector3(0, 0, 0);
-  /**
-   * @type {THREE.PerspectiveCamera}
-   */
-  camera = null;
+  elevation: number = 60;
+  azimuth: number = 150;
+  radius: number = (MIN_CAMERA_RADIUS + MAX_CAMERA_RADIUS) / 2;
+  origin: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+  camera: THREE.Camera;
 
-  constructor(gameWindow) {
+  constructor(gameWindow: HTMLElement) {
     this.camera = new THREE.PerspectiveCamera(
       75,
       gameWindow.offsetWidth / gameWindow.offsetHeight,
@@ -48,18 +34,21 @@ export default class Camera {
       this.radius *
       Math.sin(this.azimuth * DEG_TO_RAD) *
       Math.cos(this.elevation * DEG_TO_RAD);
+
     this.camera.position.y =
       this.radius * Math.sin(this.elevation * DEG_TO_RAD);
+
     this.camera.position.z =
       this.radius *
       Math.cos(this.azimuth * DEG_TO_RAD) *
       Math.cos(this.elevation * DEG_TO_RAD);
+
     this.camera.position.add(this.origin);
     this.camera.lookAt(this.origin);
     this.camera.updateMatrix();
   }
 
-  rotateCamera = (event) => {
+  rotateCamera = (event: MouseEvent) => {
     this.azimuth += -(event.movementX * ROTATION_SPEED);
     this.elevation += event.movementY * ROTATION_SPEED;
     this.elevation = Math.min(
@@ -69,7 +58,7 @@ export default class Camera {
     this.updateCameraPosition();
   };
 
-  panCamera = (event) => {
+  panCamera = (event: MouseEvent) => {
     const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(
       Y_AXIS,
       this.azimuth * DEG_TO_RAD
@@ -83,7 +72,7 @@ export default class Camera {
     this.updateCameraPosition();
   };
 
-  zoomCamera = (event) => {
+  zoomCamera = (event: MouseEvent) => {
     this.radius -= event.movementY * ZOOM_SPEED;
     this.radius = Math.min(
       MAX_CAMERA_RADIUS,
@@ -92,7 +81,7 @@ export default class Camera {
     this.updateCameraPosition();
   };
 
-  handleCameraMove = (event) => {
+  handleCameraMove = (event: MouseEvent) => {
     if (mouseState.isLeftMouseDown) {
       this.rotateCamera(event);
     }

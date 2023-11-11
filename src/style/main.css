@@ -1,0 +1,22 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+#root-window {
+  height: 100%;
+}
+
+#render-target {
+  height: 100%;
+}
+
+#icon-credit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0.5em;
+  font-size: 0.8em;
+  color: #aaa;
+}

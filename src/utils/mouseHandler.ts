@@ -1,8 +1,8 @@
-const MouseButtons = {
-  LEFT_MOUSE_BUTTON: 0,
-  MIDDLE_MOUSE_BUTTON: 1,
-  RIGHT_MOUSE_BUTTON: 2,
-};
+enum MouseButtons {
+  LEFT_MOUSE_BUTTON,
+  MIDDLE_MOUSE_BUTTON,
+  RIGHT_MOUSE_BUTTON,
+}
 
 export const mouseState = {
   /**
@@ -23,7 +23,7 @@ export const mouseState = {
  *  Gets the mouse button press state.  Should be called first on mouse down.
  * @param {MouseEvent} event The mouse event fired on mouse down.
  */
-export const setMouseDownState = (event) => {
+export const setMouseDownState = (event: MouseEvent) => {
   switch (event.button) {
     case MouseButtons.LEFT_MOUSE_BUTTON:
       mouseState.isLeftMouseDown = true;
@@ -44,7 +44,7 @@ export const setMouseDownState = (event) => {
  * Gets the mouse button release state.  Should be called first on mouse up.
  * @param {MouseEvent} event The mouse event fired on mouse up.
  */
-export const setMouseUpState = (event) => {
+export const setMouseUpState = (event: MouseEvent) => {
   switch (event.button) {
     case MouseButtons.LEFT_MOUSE_BUTTON:
       mouseState.isLeftMouseDown = false;

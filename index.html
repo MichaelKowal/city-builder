@@ -1,46 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Document</title>
-    <link rel="stylesheet" href="./public/main.css" />
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
-        }
-      }
-    </script>
+    <link rel="stylesheet" href="src/style/main.css" />
+    <link rel="icon" type="image/x-icon" href="src/images/favicon.ico" />
   </head>
   <body>
     <div id="root-window">
       <div id="render-target"></div>
     </div>
-    <script type="module">
-      import Scene from "./src/scene.js";
-
-      window.onload = () => {
-        window.scene = new Scene();
-
-        document.addEventListener("mousedown", (e) => {
-          window.scene.onMouseDown(e);
-        });
-
-        document.addEventListener("mouseup", (e) => {
-          window.scene.onMouseUp(e);
-        });
-
-        document.addEventListener("mousemove", (e) => {
-          window.scene.onMouseMove(e);
-        });
-
-        document.addEventListener("contextmenu", (e) => {
-          e.preventDefault();
-        });
-
-        window.scene.start();
-      };
-    </script>
+    <a
+      id="icon-credit"
+      href="https://www.freepik.com/icon/buildings_2055483#fromView=search&term=cartoon+building&page=1&position=6&track=ais"
+      >Icon by Freepik</a
+    >
+    <script type="module" src="/src/index.ts"></script>
   </body>
 </html>
