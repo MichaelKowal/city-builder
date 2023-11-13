@@ -1,5 +1,8 @@
 export enum BuildingType {
   BUILDING = "building",
+  COMMERCIAL = "commercial",
+  INDUSTRIAL = "industrial",
+  RESIDENTIAL = "residential",
 }
 
 export enum GroundType {
@@ -7,5 +10,9 @@ export enum GroundType {
   GRASS = "grass",
 }
 
+export enum OtherType {
+  ROAD = "road",
+}
+
 // Union of all different asset types.
-export type AssetType = BuildingType | GroundType;
+export type AssetType = BuildingType | GroundType | OtherType;

@@ -1,41 +1,42 @@
-import * as THREE from "three";
 import Game from "./game";
 import Tile from "./tile";
-import IUpdatable from "./types/IUpdatable";
+import IUpdatable from "../types/IUpdatable";
 
 export default class City implements IUpdatable {
-  data: Tile[][] = [];
-  size: number = 0;
+  tiles: Tile[][] = [];
 
-  constructor(size: number) {
-    this.size = size;
+  constructor() {
     this.initializeCity();
   }
 
   initializeCity() {
-    const scene = Game.getInstance().scene?.scene;
+    const scene = Game.scene?.scene;
     if (!scene) {
       return;
     }
     // Create a 2D array of size x size
     // For each element in the array, create a building
-    for (let x = 0; x < this.size; x++) {
+    for (let x = 0; x < Game.size; x++) {
       const column: Tile[] = [];
-      for (let y = 0; y < this.size; y++) {
+      for (let y = 0; y < Game.size; y++) {
         const tile = new Tile(x, y);
         tile.createMesh(tile.ground!);
         column.push(tile);
       }
-      this.data.push(column);
+      this.tiles.push(column);
     }
   }
 
   update() {
     // Update the city
-    for (let x = 0; x < this.size; x++) {
-      for (let y = 0; y < this.size; y++) {
-        this.data[x][y].update();
+    for (let x = 0; x < Game.size; x++) {
+      for (let y = 0; y < Game.size; y++) {
+        this.tiles[x][y].update();
       }
     }
+  }
+
+  getTile(x: number, y: number) {
+    return this.tiles[x][y];
   }
 }

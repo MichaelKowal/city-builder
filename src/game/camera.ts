@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Game from "./game";
 import {
   DEG_TO_RAD,
   MAX_CAMERA_ELEVATION,
@@ -9,8 +10,8 @@ import {
   ROTATION_SPEED,
   Y_AXIS,
   ZOOM_SPEED,
-} from "./utils/constants";
-import { mouseState } from "./utils/mouseHandler";
+} from "../utils/constants";
+import { mouseState } from "../utils/mouseHandler";
 
 export default class Camera {
   elevation: number = 60;
@@ -25,6 +26,12 @@ export default class Camera {
       gameWindow.offsetWidth / gameWindow.offsetHeight,
       0.1,
       1000
+    );
+    // Set the origin to the middle of the board as the board starts at 0, 0, 0.
+    this.origin = new THREE.Vector3(
+      (Game.size ?? 0) / 2,
+      0,
+      (Game.size ?? 0) / 2
     );
     this.updateCameraPosition();
   }

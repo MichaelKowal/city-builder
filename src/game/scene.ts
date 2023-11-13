@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import Camera from "./camera.js";
+import Camera from "./camera";
 import {
   mouseState,
   setMouseDownState,
   setMouseUpState,
-} from "./utils/mouseHandler";
-import Game from "./game.js";
+} from "../utils/mouseHandler";
+import Game from "./game";
 
 export default class Scene {
   gameWindow: HTMLElement | null = null;
@@ -75,25 +75,12 @@ export default class Scene {
       (event.clientY / this.renderer.domElement.clientHeight) * -2 + 1;
 
     this.raycaster.setFromCamera(mouseState.mousePosition, this.camera.camera);
-    let intersections = this.raycaster.intersectObjects(
+    const intersections = this.raycaster.intersectObjects(
       this.scene.children,
       false
     );
     if (intersections.length > 0) {
-      // If there is already a selected object, reset its emissive color and deselect it.
-      if (Game.getInstance().selectedObject) {
-        (
-          (Game.getInstance().selectedObject as THREE.Mesh)
-            .material as THREE.MeshLambertMaterial
-        ).emissive.set(0x000000);
-        Game.getInstance().selectedObject = null;
-      }
-      // Set the emissive color of the selected object and set it as the selected object.
-      Game.getInstance().selectedObject = intersections[0].object;
-      (
-        (Game.getInstance().selectedObject! as THREE.Mesh)
-          .material as THREE.MeshLambertMaterial
-      ).emissive.set(0x555555);
+      Game.handleIntersection(intersections);
     }
   };
 

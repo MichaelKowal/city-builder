@@ -1,13 +1,25 @@
 {
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended-type-checked"
+    "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/jsx-runtime"
   ],
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "react", "react-hooks"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": true,
     "tsconfigRootDir": "."
   },
-  "root": true
+  "root": true,
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-uses-react": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }

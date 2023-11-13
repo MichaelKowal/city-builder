@@ -1,0 +1,20 @@
+.tooltip-anchor {
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  top: -2.25rem;
+  left: 50%;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  background: var(--primary-200);
+  border: 3px solid var(--primary-900);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.tooltip p {
+  color: var(--primary-900);
+  font-weight: 600;
+  margin: auto;
+}

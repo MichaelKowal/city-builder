@@ -1,0 +1,55 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: "Rubik", sans-serif;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --dragonScale: #00ad76;
+  --softGreen: #72c674;
+  --sunglow: #ffd034;
+  --melon: #ff7c5b;
+  --tombBlue: #009bce;
+  --primary: #ffd034;
+  --secondary: #3463ff;
+  --softGreen-50: #eaf7eb;
+  --softGreen-100: #cceacd;
+  --softGreen-200: #acddad;
+  --softGreen-300: #8bd18c;
+  --softGreen-400: #72c674;
+  --softGreen-500: #5bbc5b;
+  --softGreen-600: #51ac51;
+  --softGreen-700: #469946;
+  --softGreen-800: #3b883c;
+  --softGreen-900: #286929;
+  --primary-50: #fff9e2;
+  --primary-100: #feeeb6;
+  --primary-200: #ffe487;
+  --primary-300: #ffda57;
+  --primary-400: #ffd034;
+  --primary-500: #ffc720;
+  --primary-600: #ffb919;
+  --primary-700: #ffa715;
+  --primary-800: #ff9612;
+  --primary-900: #ff770b;
+  --background: var(--primary-400);
+  --border: 8px solid var(--primary-900);
+  --border-radius: 1rem;
+  --box-shadow: 4px 9px #000;
+}
+
+#root-window {
+  height: 100%;
+}
+
+#render-target {
+  height: 100%;
+}

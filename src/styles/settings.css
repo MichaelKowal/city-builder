@@ -1,0 +1,17 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.settings-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  min-height: 3rem;
+}
