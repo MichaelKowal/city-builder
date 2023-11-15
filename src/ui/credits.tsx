@@ -3,7 +3,6 @@ import UIButton from "./baseComponents/button";
 import { useTranslation } from "react-i18next";
 
 export interface CreditsProps {
-  show: boolean;
   onClose: () => void;
 }
 

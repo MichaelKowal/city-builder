@@ -65,4 +65,6 @@
   flex-direction: column;
   background-color: var(--primary-100);
   gap: 1rem;
+  overflow-y: auto;
+  max-height: calc(100% - 7.5rem);
 }

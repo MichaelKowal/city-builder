@@ -14,7 +14,6 @@ const Tooltip: React.FC<PropsWithChildren<TooltipProps>> = (props) => {
     if (!props.text) {
       return;
     }
-    console.log("mouse enter");
     setShowTooltip(true);
   };
 

@@ -15,7 +15,7 @@ const assets: AssetFactory = {
     // factory.  This allows the buildings to grow over time.
     const height = args.level as number;
     const material = new THREE.MeshLambertMaterial({
-      color: getColor(BuildingType.BUILDING, height),
+      color: getColor(BuildingType.BUILDING),
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -30,7 +30,7 @@ const assets: AssetFactory = {
     // factory.  This allows the buildings to grow over time.
     const height = args.level as number;
     const material = new THREE.MeshLambertMaterial({
-      color: getColor(BuildingType.RESIDENTIAL, height),
+      color: getColor(BuildingType.RESIDENTIAL),
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -45,7 +45,7 @@ const assets: AssetFactory = {
     // factory.  This allows the buildings to grow over time.
     const height = args.level as number;
     const material = new THREE.MeshLambertMaterial({
-      color: getColor(BuildingType.COMMERCIAL, height),
+      color: getColor(BuildingType.COMMERCIAL),
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -60,7 +60,7 @@ const assets: AssetFactory = {
     // factory.  This allows the buildings to grow over time.
     const height = args.level as number;
     const material = new THREE.MeshLambertMaterial({
-      color: getColor(BuildingType.INDUSTRIAL, height),
+      color: getColor(BuildingType.INDUSTRIAL),
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -100,7 +100,7 @@ const assets: AssetFactory = {
     const mesh = new THREE.Mesh(geometry, material);
     mesh.userData = { ...args, type: OtherType.ROAD };
     mesh.scale.set(1, 0.1, 1);
-    mesh.position.set(args.x, -0.5, args.y);
+    mesh.position.set(args.x, 0, args.y);
 
     return mesh;
   },
@@ -110,18 +110,8 @@ export function createAssetInstance(assetType: AssetType, args: AssetData) {
   return assets[assetType](args);
 }
 
-const getColor = (assetType: AssetType, level?: number) => {
+const getColor = (assetType: AssetType) => {
   switch (assetType) {
-    case BuildingType.BUILDING:
-      switch (level) {
-        case 1:
-          return 0x7069f5;
-        case 2:
-          return 0xe9f569;
-        case 3:
-          return 0xf569b8;
-      }
-      break;
     case BuildingType.RESIDENTIAL:
       return 0x00ad76;
     case BuildingType.COMMERCIAL:

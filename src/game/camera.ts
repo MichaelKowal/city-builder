@@ -11,7 +11,7 @@ import {
   Y_AXIS,
   ZOOM_SPEED,
 } from "../utils/constants";
-import { mouseState } from "../utils/mouseHandler";
+import { currentKeysPressed, mouseState } from "../utils/inputHandler";
 
 export default class Camera {
   elevation: number = 60;
@@ -19,6 +19,7 @@ export default class Camera {
   radius: number = (MIN_CAMERA_RADIUS + MAX_CAMERA_RADIUS) / 2;
   origin: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
   camera: THREE.Camera;
+  interval: number | undefined;
 
   constructor(gameWindow: HTMLElement) {
     this.camera = new THREE.PerspectiveCamera(
@@ -88,8 +89,8 @@ export default class Camera {
     this.updateCameraPosition();
   };
 
-  handleCameraMove = (event: MouseEvent) => {
-    if (mouseState.isLeftMouseDown) {
+  handleCameraMoveWithMouse = (event: MouseEvent) => {
+    if (mouseState.isLeftMouseDown && currentKeysPressed.has("Shift")) {
       this.rotateCamera(event);
     }
 
@@ -100,5 +101,67 @@ export default class Camera {
     if (mouseState.isMiddleMouseDown) {
       this.zoomCamera(event);
     }
+  };
+
+  handleCameraMoveWithKeys = () => {
+    // Move camera with keyboard.
+    this.interval = setInterval(() => {
+      const x = currentKeysPressed.has(Game.keyBinds.panLeft)
+        ? 2
+        : currentKeysPressed.has(Game.keyBinds.panRight)
+        ? -2
+        : 0;
+      const y = currentKeysPressed.has(Game.keyBinds.panUp)
+        ? 2
+        : currentKeysPressed.has(Game.keyBinds.panDown)
+        ? -2
+        : 0;
+      const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(
+        Y_AXIS,
+        this.azimuth * DEG_TO_RAD
+      );
+      const left = new THREE.Vector3(1, 0, 0).applyAxisAngle(
+        Y_AXIS,
+        this.azimuth * DEG_TO_RAD
+      );
+      this.origin.addScaledVector(forward, y * PAN_SPEED);
+      this.origin.addScaledVector(left, x * PAN_SPEED);
+
+      const rotate = currentKeysPressed.has(Game.keyBinds.rotateCW)
+        ? 1
+        : currentKeysPressed.has(Game.keyBinds.rotateCCW)
+        ? -1
+        : 0;
+      this.azimuth += -(rotate * ROTATION_SPEED);
+
+      const elevation = currentKeysPressed.has(Game.keyBinds.flyUp)
+        ? 1
+        : currentKeysPressed.has(Game.keyBinds.flyDown)
+        ? -1
+        : 0;
+      this.elevation += elevation * ROTATION_SPEED;
+      this.elevation = Math.min(
+        MAX_CAMERA_ELEVATION,
+        Math.max(MIN_CAMERA_ELEVATION, this.elevation)
+      );
+
+      const zoom = currentKeysPressed.has(Game.keyBinds.zoomIn)
+        ? 1
+        : currentKeysPressed.has(Game.keyBinds.zoomOut)
+        ? -1
+        : 0;
+
+      this.radius -= zoom * ZOOM_SPEED;
+      this.radius = Math.min(
+        MAX_CAMERA_RADIUS,
+        Math.max(MIN_CAMERA_RADIUS, this.radius)
+      );
+
+      this.updateCameraPosition();
+    }, 200);
+  };
+
+  handleCameraStop = () => {
+    clearInterval(this.interval);
   };
 }

@@ -1,0 +1,37 @@
+.input {
+  border: 4px solid var(--primary-600);
+  box-shadow: 4px 9px #999;
+  border-radius: 0.75rem;
+  background-color: var(--primary-600);
+}
+
+.input input {
+  height: 2rem;
+  background: var(--primary-100);
+  border: 4px solid var(--primary-600);
+  border-radius: 0.5rem;
+  padding: 0 0.5rem;
+  color: var(--primary-900);
+  font-size: 1rem;
+  min-width: 1rem;
+}
+
+.input input:focus,
+.input input.input-focused {
+  border: 6px solid var(--primary-600);
+  outline: none;
+  transform: scale(1.33);
+  box-shadow: 4px 9px #666;
+}
+
+.input.sm input {
+  width: 5rem;
+}
+
+.input.md input {
+  width: 10rem;
+}
+
+.input.lg input {
+  width: 15rem;
+}

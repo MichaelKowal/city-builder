@@ -17,15 +17,16 @@
 }
 
 .ui-section {
-  padding: 0.25rem;
   color: var(--primary-900);
   font-weight: 800;
   display: flex;
   justify-content: space-evenly;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   background-color: var(--primary-100);
   border-radius: 0.5rem;
+  align-items: center;
+  padding: 0.25rem 0.75rem 0.25rem 0.5rem;
 }
 
 .ui-section.ui-end {
@@ -37,7 +38,7 @@
 }
 
 .ui-section-title {
-  width: 100%;
+  width: min-content;
   text-align: center;
 }
 

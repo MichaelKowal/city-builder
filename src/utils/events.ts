@@ -13,4 +13,10 @@ export function configureEventHandlers() {
   document.addEventListener("contextmenu", (e) => {
     e.preventDefault();
   });
+  document.addEventListener("keydown", (e) => {
+    (window as GameWindow).scene?.onKeyDown(e);
+  });
+  document.addEventListener("keyup", (e) => {
+    (window as GameWindow).scene?.onKeyUp(e);
+  });
 }

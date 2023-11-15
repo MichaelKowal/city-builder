@@ -3,34 +3,57 @@ import Dialog from "./baseComponents/dialog";
 import UIButton from "./baseComponents/button";
 import Credits from "./credits";
 import "../styles/settings.css";
+import Controls from "./controls";
 
 interface SettingsProps {
   show: boolean;
   onClose: () => void;
 }
 
-const Settings: React.FC<SettingsProps> = (props) => {
-  const [showCredits, setShowCredits] = React.useState(false);
+enum SettingsPanel {
+  SETTINGS = "settings",
+  CONTROLS = "controls",
+  CREDITS = "credits",
+}
 
-  const getTitle = () => {
-    if (showCredits) {
-      return "credits";
-    }
-    return "settings";
-  };
+const Settings: React.FC<SettingsProps> = (props) => {
+  const [settingsPanel, setSettingsPanel] = React.useState<SettingsPanel>(
+    SettingsPanel.SETTINGS
+  );
 
   const handleClose = () => {
-    setShowCredits(false);
+    setSettingsPanel(SettingsPanel.SETTINGS);
     props.onClose();
+  };
+
+  const renderPanel = () => {
+    switch (settingsPanel) {
+      case SettingsPanel.CONTROLS:
+        return (
+          <Controls onClose={() => setSettingsPanel(SettingsPanel.SETTINGS)} />
+        );
+      case SettingsPanel.CREDITS:
+        return (
+          <Credits onClose={() => setSettingsPanel(SettingsPanel.SETTINGS)} />
+        );
+    }
+    return renderSettings();
   };
 
   const renderSettings = () => {
     return (
       <div className="settings">
-        <div className="settings-row">
+        <div className="settings-row centered">
+          <UIButton
+            label="show-controls"
+            onClick={() => setSettingsPanel(SettingsPanel.CONTROLS)}
+            hideTooltip
+          />
+        </div>
+        <div className="settings-row centered">
           <UIButton
             label="show-credits"
-            onClick={() => setShowCredits(true)}
+            onClick={() => setSettingsPanel(SettingsPanel.CREDITS)}
             hideTooltip
           />
         </div>
@@ -39,12 +62,8 @@ const Settings: React.FC<SettingsProps> = (props) => {
   };
 
   return (
-    <Dialog show={props.show} onClose={handleClose} title={getTitle()}>
-      {showCredits ? (
-        <Credits show={showCredits} onClose={() => setShowCredits(false)} />
-      ) : (
-        renderSettings()
-      )}
+    <Dialog show={props.show} onClose={handleClose} title={settingsPanel}>
+      {renderPanel()}
     </Dialog>
   );
 };

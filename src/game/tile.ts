@@ -95,6 +95,7 @@ export default class Tile implements IUpdatable {
       return;
     }
     this.road = new Road();
+    this.createMesh(this.road);
   }
 
   // Remove a building or road that is on a tile. The ground on that tile should be

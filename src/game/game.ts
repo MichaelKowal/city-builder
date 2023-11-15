@@ -6,6 +6,9 @@ import IUpdatable from "../types/IUpdatable";
 import { configureEventHandlers } from "../utils/events";
 import { isAssetData, isMesh } from "../utils/typeGuards";
 import { Tool, handleTool } from "../utils/tools";
+import { getDefaultKeyBinds } from "../utils/keyBindUtils";
+import { load, saveKeys } from "../utils/save";
+import { KeyBindings } from "../types/KeyBindings";
 
 const GAME_SPEEDS = [1000, 500, 100];
 
@@ -25,9 +28,10 @@ class Game implements IUpdatable {
   public size: number = 0;
   public activeTool: Tool = Tool.None;
   public cityName: string = "";
+  public keyBinds = getDefaultKeyBinds();
+  public isPaused: boolean = false;
   private speedIndex: number = 0;
   private intervalId: number | null = null;
-  private isPaused: boolean = false;
 
   static instance: Game;
 
@@ -45,6 +49,12 @@ class Game implements IUpdatable {
   public init = (size: number, cityName: string) => {
     this.size = size;
     this.cityName = cityName;
+
+    const controls = load(saveKeys.keyBindings);
+    if (controls) {
+      this.keyBinds = controls as KeyBindings;
+    }
+
     this.scene = new Scene();
     (window as GameWindow).scene = this.scene;
 
@@ -73,7 +83,11 @@ class Game implements IUpdatable {
     this.city?.update();
   }
 
-  public changeSpeed = () => {
+  public getSpeed = () => {
+    return this.speedIndex;
+  };
+
+  public nextSpeed = () => {
     this.speedIndex = this.speedIndex + 1;
     if (this.speedIndex >= GAME_SPEEDS.length) {
       this.speedIndex = 0;

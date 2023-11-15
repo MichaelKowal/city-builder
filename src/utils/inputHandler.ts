@@ -13,6 +13,8 @@ export const mouseState = {
   mousePosition: new THREE.Vector2(),
 };
 
+export const currentKeysPressed = new Set<string>();
+
 /**
  *  Gets the mouse button press state.  Should be called first on mouse down.
  * @param {MouseEvent} event The mouse event fired on mouse down.
@@ -54,4 +56,12 @@ export const setMouseUpState = (event: MouseEvent) => {
   event.preventDefault();
   event.stopPropagation();
   event.stopImmediatePropagation();
+};
+
+export const setKeyDownState = (event: KeyboardEvent) => {
+  currentKeysPressed.add(event.key);
+};
+
+export const setKeyUpState = (event: KeyboardEvent) => {
+  currentKeysPressed.delete(event.key);
 };

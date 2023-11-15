@@ -1,10 +1,13 @@
 import * as THREE from "three";
 import Camera from "./camera";
 import {
+  currentKeysPressed,
   mouseState,
+  setKeyDownState,
+  setKeyUpState,
   setMouseDownState,
   setMouseUpState,
-} from "../utils/mouseHandler";
+} from "../utils/inputHandler";
 import Game from "./game";
 
 export default class Scene {
@@ -88,7 +91,9 @@ export default class Scene {
     // Call this first to ensure the mouse state is set for
     // further event handlers.
     setMouseDownState(event);
-    this.checkForIntersections(event);
+    if (!currentKeysPressed.has("Shift")) {
+      this.checkForIntersections(event);
+    }
   };
 
   onMouseUp = (event: MouseEvent) => {
@@ -98,6 +103,19 @@ export default class Scene {
   };
 
   onMouseMove = (event: MouseEvent) => {
-    this.camera.handleCameraMove(event);
+    this.camera.handleCameraMoveWithMouse(event);
+    if (mouseState.isLeftMouseDown && !currentKeysPressed.has("Shift")) {
+      this.checkForIntersections(event);
+    }
+  };
+
+  onKeyDown = (event: KeyboardEvent) => {
+    setKeyDownState(event);
+    this.camera.handleCameraMoveWithKeys();
+  };
+
+  onKeyUp = (event: KeyboardEvent) => {
+    setKeyUpState(event);
+    this.camera.handleCameraStop();
   };
 }
