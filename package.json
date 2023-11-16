@@ -25,6 +25,7 @@
   "homepage": "https://github.com/MichaelKowal/city-builder#readme",
   "dependencies": {
     "i18next": "^23.7.3",
+    "lodash.throttle": "^4.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.4.0",
@@ -32,6 +33,7 @@
     "three": "^0.158.0"
   },
   "devDependencies": {
+    "@types/lodash.throttle": "^4.1.9",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/three": "^0.158.2",

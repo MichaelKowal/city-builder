@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import Game from "../game/game";
+import GameManager from "../game/gameManager";
 import "../styles/ui.css";
 import { Tool } from "../utils/tools";
+import InfoPanel from "./info";
 import Meta from "./meta";
 import Tools from "./tools";
 import Zones from "./zones";
 
 const UI: React.FC = () => {
-  const [currentTool, setCurrentTool] = useState(Game.activeTool);
+  const [currentTool, setCurrentTool] = useState(GameManager.activeTool);
 
   const isButtonActive = (label: Tool) => {
     return currentTool === label;
@@ -15,10 +16,10 @@ const UI: React.FC = () => {
 
   const handleActivateTool = (tool: Tool) => {
     if (currentTool === tool) {
-      Game.activeTool = Tool.None;
+      GameManager.activeTool = Tool.None;
       setCurrentTool(Tool.None);
     } else {
-      Game.activeTool = tool;
+      GameManager.activeTool = tool;
       setCurrentTool(tool);
     }
   };
@@ -31,6 +32,7 @@ const UI: React.FC = () => {
 
   return (
     <div id="ui-root" onMouseDown={handleUIPanelClick}>
+      <InfoPanel />
       <Zones
         handleActivateTool={handleActivateTool}
         isButtonActive={isButtonActive}

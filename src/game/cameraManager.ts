@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Game from "./game";
+import GameManager from "./gameManager";
 import {
   DEG_TO_RAD,
   MAX_CAMERA_ELEVATION,
@@ -13,7 +13,7 @@ import {
 } from "../utils/constants";
 import { currentKeysPressed, mouseState } from "../utils/inputHandler";
 
-export default class Camera {
+export default class CameraManager {
   elevation: number = 60;
   azimuth: number = 150;
   radius: number = (MIN_CAMERA_RADIUS + MAX_CAMERA_RADIUS) / 2;
@@ -30,9 +30,9 @@ export default class Camera {
     );
     // Set the origin to the middle of the board as the board starts at 0, 0, 0.
     this.origin = new THREE.Vector3(
-      (Game.size ?? 0) / 2,
+      (GameManager.size ?? 0) / 2,
       0,
-      (Game.size ?? 0) / 2
+      (GameManager.size ?? 0) / 2
     );
     this.updateCameraPosition();
   }
@@ -106,14 +106,14 @@ export default class Camera {
   handleCameraMoveWithKeys = () => {
     // Move camera with keyboard.
     this.interval = setInterval(() => {
-      const x = currentKeysPressed.has(Game.keyBinds.panLeft)
+      const x = currentKeysPressed.has(GameManager.keyBinds.panLeft)
         ? 2
-        : currentKeysPressed.has(Game.keyBinds.panRight)
+        : currentKeysPressed.has(GameManager.keyBinds.panRight)
         ? -2
         : 0;
-      const y = currentKeysPressed.has(Game.keyBinds.panUp)
+      const y = currentKeysPressed.has(GameManager.keyBinds.panUp)
         ? 2
-        : currentKeysPressed.has(Game.keyBinds.panDown)
+        : currentKeysPressed.has(GameManager.keyBinds.panDown)
         ? -2
         : 0;
       const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(
@@ -127,16 +127,16 @@ export default class Camera {
       this.origin.addScaledVector(forward, y * PAN_SPEED);
       this.origin.addScaledVector(left, x * PAN_SPEED);
 
-      const rotate = currentKeysPressed.has(Game.keyBinds.rotateCW)
+      const rotate = currentKeysPressed.has(GameManager.keyBinds.rotateCW)
         ? 1
-        : currentKeysPressed.has(Game.keyBinds.rotateCCW)
+        : currentKeysPressed.has(GameManager.keyBinds.rotateCCW)
         ? -1
         : 0;
       this.azimuth += -(rotate * ROTATION_SPEED);
 
-      const elevation = currentKeysPressed.has(Game.keyBinds.flyUp)
+      const elevation = currentKeysPressed.has(GameManager.keyBinds.flyUp)
         ? 1
-        : currentKeysPressed.has(Game.keyBinds.flyDown)
+        : currentKeysPressed.has(GameManager.keyBinds.flyDown)
         ? -1
         : 0;
       this.elevation += elevation * ROTATION_SPEED;
@@ -145,9 +145,9 @@ export default class Camera {
         Math.max(MIN_CAMERA_ELEVATION, this.elevation)
       );
 
-      const zoom = currentKeysPressed.has(Game.keyBinds.zoomIn)
+      const zoom = currentKeysPressed.has(GameManager.keyBinds.zoomIn)
         ? 1
-        : currentKeysPressed.has(Game.keyBinds.zoomOut)
+        : currentKeysPressed.has(GameManager.keyBinds.zoomOut)
         ? -1
         : 0;
 

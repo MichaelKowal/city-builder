@@ -1,22 +1,22 @@
-import { GameWindow } from "../types/GameWindow";
+import GameManager from "../game/gameManager";
 
 export function configureEventHandlers() {
   document.addEventListener("mousedown", (e) => {
-    (window as GameWindow).scene?.onMouseDown(e);
+    GameManager.onMouseDown(e);
   });
   document.addEventListener("mouseup", (e) => {
-    (window as GameWindow).scene?.onMouseUp(e);
+    GameManager.onMouseUp(e);
   });
   document.addEventListener("mousemove", (e) => {
-    (window as GameWindow).scene?.onMouseMove(e);
+    GameManager.onMouseMove(e);
   });
   document.addEventListener("contextmenu", (e) => {
     e.preventDefault();
   });
   document.addEventListener("keydown", (e) => {
-    (window as GameWindow).scene?.onKeyDown(e);
+    GameManager.onKeyDown(e);
   });
   document.addEventListener("keyup", (e) => {
-    (window as GameWindow).scene?.onKeyUp(e);
+    GameManager.onKeyUp(e);
   });
 }

@@ -6,7 +6,7 @@ import {
   PiCellSignalMediumFill,
 } from "react-icons/pi";
 import { TbSettings } from "react-icons/tb";
-import Game from "../game/game";
+import GameManager from "../game/gameManager";
 import { Tool } from "../utils/tools";
 import UIButton from "./baseComponents/button";
 import Settings from "./settings";
@@ -18,19 +18,19 @@ export interface MetaProps {
 const Meta: React.FC<MetaProps> = (props) => {
   const [showSettings, setShowSettings] = useState(false);
   const { setCurrentTool } = props;
-  const [paused, setPaused] = useState(Game.isPaused);
-  const [gameSpeed, setGameSpeed] = useState(Game.getSpeed());
+  const [paused, setPaused] = useState(GameManager.isPaused);
+  const [gameSpeed, setGameSpeed] = useState(GameManager.getSpeed());
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        Game.activeTool = Tool.None;
+        GameManager.activeTool = Tool.None;
         setCurrentTool(Tool.None);
       }
-      if (e.key === Game.keyBinds.pause && e.shiftKey === false) {
+      if (e.key === GameManager.keyBinds.pause && e.shiftKey === false) {
         togglePause();
       }
-      if (e.key === Game.keyBinds.pause && e.shiftKey === true) {
+      if (e.key === GameManager.keyBinds.pause && e.shiftKey === true) {
         handleSpeedChange();
       }
     };
@@ -43,17 +43,17 @@ const Meta: React.FC<MetaProps> = (props) => {
   });
 
   const handleSpeedChange = () => {
-    Game.nextSpeed();
-    setGameSpeed(Game.getSpeed());
+    GameManager.nextSpeed();
+    setGameSpeed(GameManager.getSpeed());
   };
 
   const togglePause = () => {
-    if (Game.isPaused) {
-      Game.play();
+    if (GameManager.isPaused) {
+      GameManager.play();
     } else {
-      Game.pause();
+      GameManager.pause();
     }
-    setPaused(Game.isPaused);
+    setPaused(GameManager.isPaused);
   };
 
   const getGameSpeedIcon = () => {
@@ -77,14 +77,14 @@ const Meta: React.FC<MetaProps> = (props) => {
 
   const handleOpenSettings = () => {
     setShowSettings(true);
-    Game.pause();
+    GameManager.pause();
     setPaused(true);
   };
   return (
     <>
       <div className="ui-section ui-end">
         <div className="ui-section-title">
-          <p>{Game.cityName}</p>
+          <p>{GameManager.cityName}</p>
         </div>
         <div className="ui-row">
           <UIButton

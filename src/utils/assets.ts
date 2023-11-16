@@ -6,91 +6,28 @@ import {
   GroundType,
   OtherType,
 } from "../types/AssetTypes";
+import { ZoneType } from "../types/ZoneTypes";
 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 
 const assets: AssetFactory = {
   [BuildingType.BUILDING]: (args: AssetData) => {
-    // The level is passed as an extra argument into the building
-    // factory.  This allows the buildings to grow over time.
-    const height = args.level as number;
-    const material = new THREE.MeshLambertMaterial({
-      color: getColor(BuildingType.BUILDING),
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.userData = { ...args, type: BuildingType.BUILDING };
-    mesh.scale.set(1, height, 1);
-    mesh.position.set(args.x, height / 2, args.y);
-
-    return mesh;
+    return createBuildingMesh(args, BuildingType.BUILDING);
   },
   [BuildingType.RESIDENTIAL]: (args: AssetData) => {
-    // The level is passed as an extra argument into the building
-    // factory.  This allows the buildings to grow over time.
-    const height = args.level as number;
-    const material = new THREE.MeshLambertMaterial({
-      color: getColor(BuildingType.RESIDENTIAL),
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.userData = { ...args, type: BuildingType.RESIDENTIAL };
-    mesh.scale.set(1, height, 1);
-    mesh.position.set(args.x, height / 2, args.y);
-
-    return mesh;
+    return createBuildingMesh(args, BuildingType.RESIDENTIAL);
   },
   [BuildingType.COMMERCIAL]: (args: AssetData) => {
-    // The level is passed as an extra argument into the building
-    // factory.  This allows the buildings to grow over time.
-    const height = args.level as number;
-    const material = new THREE.MeshLambertMaterial({
-      color: getColor(BuildingType.COMMERCIAL),
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.userData = { ...args, type: BuildingType.COMMERCIAL };
-    mesh.scale.set(1, height, 1);
-    mesh.position.set(args.x, height / 2, args.y);
-
-    return mesh;
+    return createBuildingMesh(args, BuildingType.COMMERCIAL);
   },
   [BuildingType.INDUSTRIAL]: (args: AssetData) => {
-    // The level is passed as an extra argument into the building
-    // factory.  This allows the buildings to grow over time.
-    const height = args.level as number;
-    const material = new THREE.MeshLambertMaterial({
-      color: getColor(BuildingType.INDUSTRIAL),
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.userData = { ...args, type: BuildingType.INDUSTRIAL };
-    mesh.scale.set(1, height, 1);
-    mesh.position.set(args.x, height / 2, args.y);
-
-    return mesh;
+    return createBuildingMesh(args, BuildingType.INDUSTRIAL);
   },
   [GroundType.DIRT]: (args: AssetData) => {
-    const material = new THREE.MeshLambertMaterial({
-      color: getColor(GroundType.DIRT),
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.userData = { ...args, type: GroundType.DIRT };
-    mesh.position.set(args.x, -0.5, args.y);
-
-    return mesh;
+    return createGroundMesh(args, GroundType.DIRT);
   },
   [GroundType.GRASS]: (args: AssetData) => {
-    const material = new THREE.MeshLambertMaterial({
-      color: getColor(GroundType.GRASS),
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.userData = { ...args, type: GroundType.GRASS };
-    mesh.position.set(args.x, -0.5, args.y);
-
-    return mesh;
+    return createGroundMesh(args, GroundType.GRASS);
   },
   [OtherType.ROAD]: (args: AssetData) => {
     const material = new THREE.MeshLambertMaterial({
@@ -101,10 +38,43 @@ const assets: AssetFactory = {
     mesh.userData = { ...args, type: OtherType.ROAD };
     mesh.scale.set(1, 0.1, 1);
     mesh.position.set(args.x, 0, args.y);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
 
     return mesh;
   },
 };
+
+function createGroundMesh(args: AssetData, type: GroundType) {
+  const material = new THREE.MeshLambertMaterial({
+    color: getColor(type),
+  });
+
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.userData = { ...args, type };
+  mesh.position.set(args.x, -0.5, args.y);
+  mesh.receiveShadow = true;
+
+  return mesh;
+}
+
+function createBuildingMesh(args: AssetData, type: BuildingType) {
+  // The level is passed as an extra argument into the building
+  // factory.  This allows the buildings to grow over time.
+  const height = args.level as number;
+  const material = new THREE.MeshLambertMaterial({
+    color: getColor(type),
+  });
+
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.userData = { ...args, type };
+  mesh.scale.set(1, height, 1);
+  mesh.position.set(args.x, height / 2, args.y);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+
+  return mesh;
+}
 
 export function createAssetInstance(assetType: AssetType, args: AssetData) {
   return assets[assetType](args);
@@ -127,3 +97,29 @@ const getColor = (assetType: AssetType) => {
   }
   return 0xffffff;
 };
+
+export function getEmissiveColor(zoneType?: ZoneType) {
+  switch (zoneType) {
+    case ZoneType.Residential:
+      return 0x00ad76;
+    case ZoneType.Commercial:
+      return 0xff7c5b;
+    case ZoneType.Industrial:
+      return 0x009bce;
+    default:
+      return 0x000000;
+  }
+}
+
+export function getNewBuildingType(zoneType: ZoneType) {
+  switch (zoneType) {
+    case ZoneType.Residential:
+      return BuildingType.RESIDENTIAL;
+    case ZoneType.Commercial:
+      return BuildingType.COMMERCIAL;
+    case ZoneType.Industrial:
+      return BuildingType.INDUSTRIAL;
+    default:
+      return BuildingType.BUILDING;
+  }
+}

@@ -1,7 +1,7 @@
-import Game from "../game/game";
-import Scene from "../game/scene";
+import GameManager from "../game/gameManager";
+import SceneManager from "../game/sceneManager";
 
 export interface GameWindow extends Window {
-  scene?: Scene;
-  game?: typeof Game;
+  scene?: SceneManager;
+  game?: typeof GameManager;
 }

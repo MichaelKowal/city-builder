@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import UIInput from "./baseComponents/input";
-import Game from "../game/game";
+import GameManager from "../game/gameManager";
 import UIButton from "./baseComponents/button";
 import { getDefaultKeyBinds } from "../utils/keyBindUtils";
 import { KeyBindings } from "../types/KeyBindings";
@@ -12,19 +12,19 @@ export interface CreditsProps {
 }
 
 const Credits: React.FC<CreditsProps> = (props) => {
-  const [keyBinds, setKeyBinds] = React.useState(Game.keyBinds);
+  const [keyBinds, setKeyBinds] = React.useState(GameManager.keyBinds);
   const { t } = useTranslation();
 
   const handleKeyBindChange = (keyBind: keyof KeyBindings, value: string) => {
-    Game.keyBinds[keyBind] = value;
-    setKeyBinds({ ...Game.keyBinds });
-    save(Game.keyBinds, saveKeys.keyBindings);
+    GameManager.keyBinds[keyBind] = value;
+    setKeyBinds({ ...GameManager.keyBinds });
+    save(GameManager.keyBinds, saveKeys.keyBindings);
   };
 
   const resetKeyBinds = () => {
-    Game.keyBinds = getDefaultKeyBinds();
-    setKeyBinds({ ...Game.keyBinds });
-    save(Game.keyBinds, saveKeys.keyBindings);
+    GameManager.keyBinds = getDefaultKeyBinds();
+    setKeyBinds({ ...GameManager.keyBinds });
+    save(GameManager.keyBinds, saveKeys.keyBindings);
   };
 
   return (

@@ -1,11 +1,13 @@
 import Building from "./building";
-import Game from "./game";
+import GameManager from "./gameManager";
 import Ground from "./ground";
-import { BuildingType } from "../types/AssetTypes";
 import IUpdatable from "../types/IUpdatable";
 import { IAsset } from "../types/IAsset";
 import { ZoneType } from "../types/ZoneTypes";
 import Road from "./road";
+import { Info, ResidentialInfo } from "../types/Info";
+import { getEmissiveColor, getNewBuildingType } from "../utils/assets";
+import { BuildingType } from "../types/AssetTypes";
 
 export default class Tile implements IUpdatable {
   x: number = 0;
@@ -22,11 +24,11 @@ export default class Tile implements IUpdatable {
     this.ground = new Ground();
   }
 
-  createMesh(asset: IAsset) {
-    if (!asset || !Game.scene) {
+  public createMesh(asset: IAsset) {
+    if (!asset || !GameManager.sceneManager) {
       return;
     }
-    const scene = Game.scene.scene;
+    const scene = GameManager.sceneManager.scene;
     if (asset.mesh) {
       scene.getObjectByName(asset.mesh.name);
       scene.remove(asset.mesh);
@@ -39,30 +41,22 @@ export default class Tile implements IUpdatable {
     scene.add(asset.mesh);
   }
 
-  removeMesh(asset: IAsset) {
-    if (!asset || !Game.scene) {
-      return;
-    }
-    const scene = Game.scene.scene;
-    if (asset.mesh) {
-      scene.getObjectByName(asset.mesh.name);
-      scene.remove(asset.mesh);
-    }
-  }
-
-  update() {
+  public update() {
     const rand = Math.random();
     // 1% chance of building upgrade if the tile has been zoned and is
     // not a road.
     if (rand < 0.01 && this.zoneType !== ZoneType.None && !this.road) {
-      let updated = false;
+      let upgraded = false;
       if (!this.building) {
-        this.building = new Building(this.getNewBuildingType());
-        updated = true;
+        this.building = new Building(getNewBuildingType(this.zoneType));
+        upgraded = true;
       } else {
-        updated = this.building.upgrade();
+        upgraded = this.building.upgrade();
       }
-      updated && this.createMesh(this.building);
+      upgraded && this.createMesh(this.building);
+    }
+    if (this.building) {
+      this.building.update();
     }
     // 10% chance for ground upgrade.
     if (rand < 0.1) {
@@ -71,12 +65,12 @@ export default class Tile implements IUpdatable {
         upgraded && this.createMesh(this.ground);
         (
           this.ground.mesh?.material as THREE.MeshLambertMaterial
-        ).emissive.setHex(this.getEmissiveColor(this.zoneType));
+        ).emissive.setHex(getEmissiveColor(this.zoneType));
       }
     }
   }
 
-  changeZone(zoneType: ZoneType) {
+  public changeZone(zoneType: ZoneType) {
     // If changing zone type remove the current building.
     if (this.building && this.zoneType !== zoneType) {
       const building = this.building;
@@ -86,11 +80,11 @@ export default class Tile implements IUpdatable {
     this.zoneType = zoneType;
     this.createMesh(this.ground!);
     (this.ground!.mesh?.material as THREE.MeshLambertMaterial).emissive.setHex(
-      this.getEmissiveColor(zoneType)
+      getEmissiveColor(zoneType)
     );
   }
 
-  createRoad() {
+  public createRoad() {
     if (this.building) {
       return;
     }
@@ -100,7 +94,7 @@ export default class Tile implements IUpdatable {
 
   // Remove a building or road that is on a tile. The ground on that tile should be
   // reset to the default ground type.
-  destroyAsset() {
+  public destroyAsset() {
     if (this.building) {
       const building = this.building;
       this.building = undefined;
@@ -114,33 +108,30 @@ export default class Tile implements IUpdatable {
     this.ground?.reset();
     this.createMesh(this.ground!);
     (this.ground!.mesh?.material as THREE.MeshLambertMaterial).emissive.setHex(
-      this.getEmissiveColor(this.zoneType)
+      getEmissiveColor(this.zoneType)
     );
   }
 
-  private getNewBuildingType() {
-    switch (this.zoneType) {
-      case ZoneType.Residential:
-        return BuildingType.RESIDENTIAL;
-      case ZoneType.Commercial:
-        return BuildingType.COMMERCIAL;
-      case ZoneType.Industrial:
-        return BuildingType.INDUSTRIAL;
-      default:
-        return BuildingType.BUILDING;
+  public getInfo(): Info {
+    const info: Info = {
+      level: this.building!.level,
+      zone: this.zoneType,
+      location: [this.x, this.y],
+    };
+    if (this.building?.type === BuildingType.RESIDENTIAL) {
+      (info as ResidentialInfo).population = this.building.residents.length;
     }
+    return info;
   }
 
-  private getEmissiveColor(zoneType: ZoneType) {
-    switch (zoneType) {
-      case ZoneType.Residential:
-        return 0x00ad76;
-      case ZoneType.Commercial:
-        return 0xff7c5b;
-      case ZoneType.Industrial:
-        return 0x009bce;
-      default:
-        return 0x000000;
+  private removeMesh(asset: IAsset) {
+    if (!asset || !GameManager.sceneManager) {
+      return;
+    }
+    const scene = GameManager.sceneManager.scene;
+    if (asset.mesh) {
+      scene.getObjectByName(asset.mesh.name);
+      scene.remove(asset.mesh);
     }
   }
 }

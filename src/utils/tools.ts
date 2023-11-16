@@ -1,4 +1,5 @@
-import Game from "../game/game";
+import { publish } from "../events/Event";
+import GameManager from "../game/gameManager";
 import Tile from "../game/tile";
 import { ZoneType } from "../types/ZoneTypes";
 
@@ -13,7 +14,7 @@ export enum Tool {
 }
 
 export const handleTool = (tile: Tile) => {
-  switch (Game.activeTool) {
+  switch (GameManager.activeTool) {
     case Tool.Residential:
       tile.changeZone(ZoneType.Residential);
       break;
@@ -32,5 +33,8 @@ export const handleTool = (tile: Tile) => {
     case Tool.ZoneErase:
       tile.changeZone(ZoneType.None);
       break;
+  }
+  if (tile.building) {
+    publish("info", { args: tile.getInfo() });
   }
 };

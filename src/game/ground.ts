@@ -8,7 +8,9 @@ export default class Ground implements IAsset {
   maxLevel: number = 3;
   mesh: THREE.Mesh | null = null;
 
-  constructor(type: GroundType = GroundType.DIRT, level = 1) {
+  // New ground tiles will start with grass.  If the tile's building or road is destroyed it
+  // will revert back to dirt.
+  constructor(type: GroundType = GroundType.GRASS, level = 2) {
     this.type = type;
     this.level = level;
   }
